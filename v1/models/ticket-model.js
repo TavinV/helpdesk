@@ -9,6 +9,7 @@ const ticketSchema = new mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     technician_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
     solution: { type: String, default: null },
+    ratingId: { type: mongoose.Schema.Types.ObjectId, ref: "Rating", default: null },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });

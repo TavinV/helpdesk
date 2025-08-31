@@ -146,19 +146,19 @@ const ticketConfirmationEmailTemplate = (ticket) => {
 
             <div class="ticket-info">
                 <div class="info-item">
-                    <span class="info-label">Título:</span>
+                    <span class="info-label">Título: </span>
                     <span class="info-value">${ticket.title}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Descrição:</span>
+                    <span class="info-label">Descrição: </span>
                     <span class="info-value">${ticket.description}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Status:</span>
+                    <span class="info-label">Status: </span>
                     <span class="info-value">${ticket.status === 'open' ? 'Aberto' : ticket.status}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Data de Criação:</span>
+                    <span class="info-label">Data de Criação: </span>
                     <span class="info-value">${new Date(ticket.createdAt).toLocaleString('pt-BR')}</span>
                 </div>
             </div>
@@ -174,7 +174,7 @@ const ticketConfirmationEmailTemplate = (ticket) => {
         </div>
 
         <div class="footer">
-            <p>© 2023 Helpdesk - Todos os direitos reservados.</p>
+            <p>© 2025 Helpdesk - Todos os direitos reservados.</p>
             <p>Este é um e-mail automático, por favor não responda.</p>
         </div>
     </div>

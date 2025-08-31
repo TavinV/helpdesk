@@ -13,9 +13,11 @@ app.use(bodyParser.json());
 import userRoutes from "./routes/user-routes.js";
 import authRoutes from "./routes/auth-routes.js";
 import ticketRoutes from "./routes/ticket-routes.js";
+import ratingRoutes from "./routes/rating-routes.js";
 
 app.use("/helpdesk/api/v1/users", userRoutes);
 app.use("/helpdesk/api/v1/auth", authRoutes);
 app.use("/helpdesk/api/v1/tickets", ticketRoutes);
+app.use("/helpdesk/api/v1/ratings", ratingRoutes);
 
 export default app;

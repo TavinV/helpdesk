@@ -31,7 +31,7 @@ const ticketController = {
             if (error instanceof SendEmailError) {
                 return ApiResponse.ACCEPTED(res, "O chamado foi criado com sucesso, mas não foi possível enviar o e-mail de confirmação.", ticket);
             }
-            return ApiResponse.ERROR(res, 'Erro ao criar ticket, ' + error.message);
+            return ApiResponse.ERROR(res, 'Erro ao criar chamado, ' + error.message);
         }
 
     },
@@ -44,7 +44,7 @@ const ticketController = {
             if (error instanceof NotFoundError) {
                 return ApiResponse.NOTFOUND(res, error.message);
             }
-            return ApiResponse.ERROR(res, 'Erro ao buscar tickets, ' + error.message);
+            return ApiResponse.ERROR(res, 'Erro ao buscar chamados, ' + error.message);
         }
     },
     async deleteTicket(req, res) {
@@ -56,7 +56,7 @@ const ticketController = {
             const ticket = await TicketServices.getTicketById(id);
 
             if (ticket.user_id != userId) {
-                return ApiResponse.FORBIDDEN(res, "Você não tem permissão para deletar este ticket.");
+                return ApiResponse.FORBIDDEN(res, "Você não tem permissão para deletar este chamado.");
             }
 
             await TicketServices.deleteTicket(id);
@@ -68,7 +68,7 @@ const ticketController = {
             if (error instanceof ValidationError) {
                 return ApiResponse.BADREQUEST(res, error.message);
             }
-            return ApiResponse.ERROR(res, 'Erro ao deletar ticket, ' + error.message);
+            return ApiResponse.ERROR(res, 'Erro ao deletar chamado, ' + error.message);
         }
     },
 
@@ -85,7 +85,7 @@ const ticketController = {
             if (error instanceof ValidationError) {
                 return ApiResponse.BADREQUEST(res, error.message);
             }
-            return ApiResponse.ERROR(res, 'Erro ao buscar ticket, ' + error.message);
+            return ApiResponse.ERROR(res, 'Erro ao buscar chamado, ' + error.message);
         }
     },
 
@@ -97,7 +97,7 @@ const ticketController = {
             const ticket = await TicketServices.getTicketById(id);
 
             if (ticket.status !== 'open') {
-                return ApiResponse.ALREADYEXISTS(res, "Este ticket já foi aceito por outro técnico ou está fechado.");
+                return ApiResponse.ALREADYEXISTS(res, "Este chamado já foi aceito por outro técnico ou está fechado.");
             }
 
             await TicketServices.acceptTicket(id, userId);
@@ -119,7 +119,7 @@ const ticketController = {
             if (error instanceof SendEmailError) {
                 return ApiResponse.ACCEPTED(res, "O chamado foi aceito com sucesso, mas não foi possível enviar o e-mail de notificação.", ticket);
             }
-            return ApiResponse.ERROR(res, 'Erro ao aceitar ticket, ' + error.message);
+            return ApiResponse.ERROR(res, 'Erro ao aceitar chamado, ' + error.message);
         }
     },
 

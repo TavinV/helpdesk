@@ -154,33 +154,29 @@ const ticketClosedEmailTemplate = (ticket, technician, solution) => {
             <p>Olá,</p>
 
             <p>Informamos que o seu chamado foi resolvido e encerrado por nosso técnico.</p>
-            
+
             <div class="ticket-info">
                 <div class="info-item">
-                    <span class="info-label">Título:</span>
+                    <span class="info-label">Título: </span>
                     <span class="info-value">${ticket.title}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Técnico Responsável:</span>
+                    <span class="info-label">Técnico Responsável: </span>
                     <span class="info-value">${technician.name}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Data de Encerramento:</span>
+                    <span class="info-label">Data de Encerramento: </span>
                     <span class="info-value">${new Date().toLocaleString('pt-BR')}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Status:</span>
+                    <span class="info-label">Status: </span>
                     <span class="info-value">Resolvido</span>
                 </div>
             </div>
 
             <div class="solution">
-                <strong>Solução Aplicada:</strong><br>
+                <strong>Solução Aplicada: </strong><br>
                 ${solution || "Problema resolvido pelo técnico."}
-            </div>
-
-            <div class="feedback">
-                <p>Gostaríamos de saber sua opinião sobre nosso atendimento. Responda nossa pesquisa de satisfação!</p>
             </div>
 
             <div class="support-info">
@@ -192,7 +188,7 @@ const ticketClosedEmailTemplate = (ticket, technician, solution) => {
         </div>
 
         <div class="footer">
-            <p>© 2023 Helpdesk - Todos os direitos reservados.</p>
+            <p>© 2025 Helpdesk - Todos os direitos reservados.</p>
             <p>Este é um e-mail automático, por favor não responda.</p>
         </div>
     </div>

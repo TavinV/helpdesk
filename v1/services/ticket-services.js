@@ -18,9 +18,9 @@ class TicketServices {
                 throw new ValidationError(error.details[0].message);
             }
 
-            const existingTicket = await Ticket.findOne({ title: data.title });
+            const existingTicket = await Ticket.findOne({ title: data.title, status: "open" });
             if (existingTicket) {
-                throw new ConflictError('Um ticket com esse título já existe');
+                throw new ConflictError('Um ticket com esse título já está aberto');
             }
 
             const ticket = new Ticket(data);
@@ -28,7 +28,7 @@ class TicketServices {
 
             return ticket;
         } catch (error) {
-            throw new AppError(`Erro ao criar ticket: ${error.message}`);
+            throw new AppError(`Erro ao criar chamado: ${error.message}`);
         }
     }
 
@@ -41,15 +41,15 @@ class TicketServices {
         try {
             const ticket = await Ticket.findById(ticketId);
             if (!ticket) {
-                throw new NotFoundError('Ticket não encontrado');
+                throw new NotFoundError('chamado não encontrado');
             }
             return ticket;
         } catch (error) {
             if (error.kind === 'ObjectId') {
-                throw new NotFoundError('Ticket não encontrado');
+                throw new NotFoundError('chamado não encontrado');
             }
 
-            throw new AppError(`Erro ao buscar ticket: ${error.message}`);
+            throw new AppError(`Erro ao buscar chamado: ${error.message}`);
         }
     }
 
@@ -68,7 +68,7 @@ class TicketServices {
                 .sort({ createdAt: -1 });
             return tickets;
         } catch (error) {
-            throw new AppError(`Erro ao buscar tickets: ${error.message}`);
+            throw new AppError(`Erro ao buscar chamados: ${error.message}`);
         }
     }
 
@@ -87,11 +87,11 @@ class TicketServices {
 
             const ticket = await Ticket.findByIdAndUpdate(ticketId, updateData, { new: true });
             if (!ticket) {
-                throw new NotFoundError('Ticket não encontrado');
+                throw new NotFoundError('chamado não encontrado');
             }
             return ticket;
         } catch (error) {
-            throw new AppError(`Erro ao atualizar ticket: ${error.message}`);
+            throw new AppError(`Erro ao atualizar chamado: ${error.message}`);
         }
     }
 
@@ -104,7 +104,7 @@ class TicketServices {
         try {
             const ticket = await Ticket.findByIdAndDelete(ticketId);
             if (!ticket) {
-                throw new NotFoundError('Ticket não encontrado');
+                throw new NotFoundError('chamado não encontrado');
             }
             return ticket;
         } catch (error) {
@@ -123,11 +123,11 @@ class TicketServices {
         const ticket = await Ticket.findById(ticketId);
 
         if (!ticket) {
-            throw new NotFoundError("Ticket não encontrado");
+            throw new NotFoundError("chamado não encontrado");
         }
 
         if (ticket.status !== 'open') {
-            throw new ConflictError(`Ticket não pode ser aceito, pois já está sendo resolvido`);
+            throw new ConflictError(`chamado não pode ser aceito, pois já está sendo resolvido`);
         }
 
         // Atualizar apenas os campos necessários
@@ -155,11 +155,11 @@ class TicketServices {
         const ticket = await Ticket.findById(ticketId);
 
         if (!ticket) {
-            throw new NotFoundError("Ticket não encontrado");
+            throw new NotFoundError("chamado não encontrado");
         }
 
         if (ticket.status !== 'in_progress') {
-            throw new ConflictError(`Ticket não pode ser resolvido, pois não está em andamento`);
+            throw new ConflictError(`chamado não pode ser resolvido, pois não está em andamento`);
         }
 
         // Atualizar apenas os campos necessários
@@ -175,6 +175,19 @@ class TicketServices {
         );
 
         return updatedTicket;
+    }
+
+    static async linkRatingToTicket(ticketId, ratingId) {
+        try {
+            const ticket = await Ticket.findByIdAndUpdate(
+                ticketId,
+                { ratingId: ratingId },
+                { new: true }
+            );
+            return ticket;
+        } catch (error) {
+            throw new AppError(`Erro ao vincular avaliação ao chamado: ${error.message}`);
+        }
     }
 }
 

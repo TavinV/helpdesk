@@ -140,19 +140,19 @@ const ticketInProgressEmailTemplate = (ticket, technician) => {
 
             <div class="ticket-info">
                 <div class="info-item">
-                    <span class="info-label">Título:</span>
+                    <span class="info-label">Título: </span>
                     <span class="info-value">${ticket.title}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Técnico Responsável:</span>
+                    <span class="info-label">Técnico Responsável: </span>
                     <span class="info-value">${technician.name}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Email do Técnico:</span>
+                    <span class="info-label">Email do Técnico: </span>
                     <span class="info-value">${technician.email}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Status:</span>
+                    <span class="info-label">Status: </span>
                     <span class="info-value">Em Andamento</span>
                 </div>
             </div>
@@ -168,7 +168,7 @@ const ticketInProgressEmailTemplate = (ticket, technician) => {
         </div>
 
         <div class="footer">
-            <p>© 2023 Helpdesk - Todos os direitos reservados.</p>
+            <p>© 2025 Helpdesk - Todos os direitos reservados.</p>
             <p>Este é um e-mail automático, por favor não responda.</p>
         </div>
     </div>
