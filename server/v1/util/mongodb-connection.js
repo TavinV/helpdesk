@@ -6,6 +6,7 @@ const connectDB = async () => {
         await mongoose.connect(uri, { dbName: "helpdesk_db" });
 
     } catch (err) {
+        console.log(process.env.MONGODB_URI);
         process.exit(1); // Finaliza o processo em caso de erro
     }
 };
