@@ -2,6 +2,7 @@
 import Header from '../components/layout/Header';
 import MainSection from '../components/layout/MainSection';
 import FormContainer from '../components/layout/FormContainer';
+import Footer from '../components/layout/Footer.jsx'
 import IconInput from '../components/layout/IconInput.jsx';
 
 import { Lock, User } from 'lucide-react';
@@ -42,6 +43,7 @@ const LoginPage = () => {
                     {error && <p className="text-red-500 text-center">{error}</p>}
                 </FormContainer>
             </MainSection>
+            <Footer/>
         </>
     );
 };
