@@ -36,7 +36,7 @@ const Header = ({ user }) => {
                 
                 {/* Menu para desktop */}
                 <nav className="hidden md:flex space-x-4 lg:space-x-8 text-lg items-center">
-                    <HeaderNavLink to="/quem-somos">Quem somos</HeaderNavLink>
+                    <HeaderNavLink to="/about">Quem somos</HeaderNavLink>
                     {user ? (
                         user.role == "technician" ? (
                             <>
@@ -63,7 +63,7 @@ const Header = ({ user }) => {
                 <>
                     <nav className="fixed top-0 right-0 h-fit w-64 bg-white shadow-2xl z-40 flex flex-col p-6 transform transition-transform duration-300 ease-in-out md:hidden">
                         <div className="flex flex-col h-fit mt-16 space-y-4">
-                            <HeaderNavLink to="/quem-somos" onClick={closeMenu}>
+                            <HeaderNavLink to="/about" onClick={closeMenu}>
                                 Quem somos
                             </HeaderNavLink>
                             {user ? (
