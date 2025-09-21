@@ -1,6 +1,6 @@
 # HelpDesk - Sistema de Chamados
 
-Aplicação fullstack para gerenciamento de chamados de suporte, com autenticação de usuários, painel de tickets e fluxo de abertura e atendimento de chamados.
+Aplicação fullstack para gerenciamento de chamados de suporte, com autenticação de usuários, painel de tickets e fluxo de abertura e atendimento de chamados. Projeto da disciplina de PFE do Senai. 
 
 🔗 **Aplicação online:** [helpdesk-gray.vercel.app](https://helpdesk-gray.vercel.app)
 
@@ -54,7 +54,7 @@ Aplicação fullstack para gerenciamento de chamados de suporte, com autenticaç
 
 ### Clonando o projeto
 ```bash
-git clone https://github.com/seu-usuario/helpdesk.git
+git clone https://github.com/tavinv/helpdesk.git
 cd helpdesk
 ```
 
@@ -73,19 +73,20 @@ npm install
 npm run dev
 ```
 
-O frontend rodará em `http://localhost:5173` e o backend em `http://localhost:5000` (ou porta definida no `.env`).
+O frontend rodará em `http://localhost:5173` e o backend em `http://localhost:3000` (ou porta definida no `.env`).
 
 ---
 
 ## 📂 Estrutura do Projeto
 ```
-/backend
-  /models
-  /routes
-  /controllers
-  /services
+/server
+  /v1
+    /models
+    /routes
+    /controllers
+    /services
   server.js
-/frontend
+/client
   /src
     /components
     /pages
