@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css'
 
-import { AuthProvider } from './context/authContext.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 import PrivateRoute from './components/auth/PrivateRoute.jsx';
 
 import Home from './pages/Home';

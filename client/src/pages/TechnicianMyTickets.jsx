@@ -1,6 +1,6 @@
 // src/pages/TechnicianMyTickets.jsx
 import { useState, useEffect } from "react";
-import { useAuthContext } from "../context/authContext.jsx";
+import { useAuthContext } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { ClipboardList, Filter, RefreshCw } from "lucide-react";
 import PageContainer from "../components/layout/PageContainer.jsx";

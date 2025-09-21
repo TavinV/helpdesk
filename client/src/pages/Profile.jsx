@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { User, Mail, CreditCard, Phone, AlertCircle, IdCard, Shield, CheckCircle, Clock } from "lucide-react";
-import { useAuthContext } from "../context/authContext.jsx";
+import { useAuthContext } from "../context/AuthContext.jsx";
 import api from "../services/api.js";
 import maskCPF from "../util/mask-cpf.js";
 import maskPhone from "../util/mask-phone.js";

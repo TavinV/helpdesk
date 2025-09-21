@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Lock, User, AlertCircle, LogIn } from 'lucide-react';
-import { useAuthContext } from '../context/authContext.jsx';
+import { useAuthContext } from '../context/AuthContext.jsx';
 import PageContainer from '../components/layout/PageContainer.jsx';
 import Card from '../components/ui/Card.jsx';
 import Button from '../components/ui/Button.jsx';

@@ -7,7 +7,7 @@ import { Lock, User, IdCard, MailCheck, Phone, AlertCircle } from 'lucide-react'
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { useState } from 'react';
-import { useAuthContext } from '../context/authContext.jsx';
+import { useAuthContext } from '../context/AuthContext.jsx';
 
 import api from '../services/api.js';
 import maskCPF from '../util/mask-cpf.js';

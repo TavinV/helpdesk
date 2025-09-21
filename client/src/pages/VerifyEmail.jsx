@@ -1,6 +1,6 @@
 // src/pages/VerifyEmail.jsx
 import { useState, useEffect } from "react";
-import { useAuthContext } from "../context/authContext.jsx";
+import { useAuthContext } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { Mail, Hash, AlertCircle, CheckCircle2, Loader2, ArrowLeft, Shield } from "lucide-react";
 import api from "../services/api.js";

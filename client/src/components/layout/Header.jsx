@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { X, Menu, User, LogOut } from "lucide-react";
 import { useState } from "react";
-import { useAuthContext } from "../../context/authContext.jsx";
+import { useAuthContext } from "../../context/AuthContext.jsx";
 
 const HeaderNavLink = ({ to, children, onClick, className = "" }) => (
     <NavLink
