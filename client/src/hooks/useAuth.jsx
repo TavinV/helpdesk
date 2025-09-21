@@ -1,47 +1,36 @@
-// src/hooks/useAuth.js
 import { useState } from 'react';
-import api from '../services/api.js'; // ajuste o caminho conforme sua estrutura
+import api from '../services/api.js';
 
 export const useAuth = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [user, setUser] = useState(null);
 
+    // Login
     const login = async (email, password) => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await api.post('/auth/login', {
-                email,
-                password
-            });
-
+            const response = await api.post('/auth/login', { email, password });
             const data = response.data.data;
 
-            if (response.data) {
-                // Salvar o token JWT
-                if (data.token) {
-                    localStorage.setItem('jwtToken', data.token);
+            if (response.data && data.token) {
+                // Salvar token
+                localStorage.setItem('jwtToken', data.token);
+                api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
-                    // Configurar o token como padrão para todas as requisições axios
-                    api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-                }
+                localStorage.setItem('userData', JSON.stringify(data.user));
+                setUser(data.user);
 
-                // Salvar informações do usuário se necessário
-                if (data.user) {
-                    localStorage.setItem('userData', JSON.stringify(data.user));
-                }
-
-                return { success: true, data };
+                return { success: true, user: data.user };
             } else {
-                setError(data.message || 'Algo deu errado durante o login');
-                return { success: false, error: data.message };
+                const message = data.message || 'Algo deu errado durante o login';
+                setError(message);
+                return { success: false, error: message };
             }
         } catch (err) {
-            // Tratamento de erro específico do axios
-            const errorMessage = err.response?.data?.message ||
-                err.message ||
-                'Erro de conexão';
+            const errorMessage = err.response?.data?.message || err.message || 'Erro de conexão';
             setError(errorMessage);
             return { success: false, error: errorMessage };
         } finally {
@@ -49,54 +38,47 @@ export const useAuth = () => {
         }
     };
 
+    // Logout
     const logout = () => {
-        // Remover token e dados do usuário
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userData');
-
-        // Remover o header de autorização do axios
+        setUser(null);
         delete api.defaults.headers.common['Authorization'];
     };
 
-    // Verificar se há um token salvo e configurar o axios
-    const initializeAuth = () => {
+    // Inicializa autenticação ao carregar a aplicação
+    const initializeAuth = async () => {
         const token = localStorage.getItem('jwtToken');
-        if (token) {
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        }
-    };
+        if (!token) return;
 
-    const getToken = () => {
-        return localStorage.getItem('jwtToken');
-    };
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-    const getUserData = () => {
-        const userData = localStorage.getItem('userData');
-        return userData ? JSON.parse(userData) : null;
-    };
-
-    const isAuthenticated = () => {
-        const token = getToken();
-        // Verifica se o token existe e não está expirado (se você tiver expiração)
-        if (!token) return false;
-
-        // Verificação básica de expiração do token JWT (se necessário)
-        // Você pode implementar uma verificação mais robusta se precisar
         try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            return payload.exp > Date.now() / 1000;
+            const response = await api.get('/users/me');
+            if (response.data.success) {
+                const { _id: userId, role, email, name } = response.data.data;
+                const userData = { userId, role, email, name };
+                setUser(userData);
+                localStorage.setItem('userData', JSON.stringify(userData));
+            } else {
+                logout(); // token inválido ou expirado
+            }
         } catch {
-            return false;
+            logout(); // erro de conexão ou token inválido
         }
     };
+
+    const getToken = () => localStorage.getItem('jwtToken');
+
+    const isAuthenticated = () => !!user;
 
     return {
         login,
         logout,
         initializeAuth,
         getToken,
-        getUserData,
         isAuthenticated,
+        user,
         loading,
         error,
         clearError: () => setError(null),

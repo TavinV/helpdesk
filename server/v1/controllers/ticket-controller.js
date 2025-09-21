@@ -35,10 +35,18 @@ const ticketController = {
         }
 
     },
-    async getTickets(req, res) {
 
+    async getTickets(req, res) {
         try {
-            const tickets = await TicketServices.getTickets();
+            const {user} = req.query;
+            let tickets;
+            
+            if (user) {
+                tickets = await TicketServices.getTickets({ user_id: user });
+            } else {
+                tickets = await TicketServices.getTickets();
+            }
+
             return ApiResponse.OK(res, tickets);
         } catch (error) {
             if (error instanceof NotFoundError) {
@@ -47,6 +55,7 @@ const ticketController = {
             return ApiResponse.ERROR(res, 'Erro ao buscar chamados, ' + error.message);
         }
     },
+
     async deleteTicket(req, res) {
         const id = req.params.id;
         const userId = req.user.userId;

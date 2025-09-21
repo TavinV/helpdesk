@@ -61,7 +61,7 @@ const authController = {
         try {
             await EmailVerificationCodeServices.validateCode(userId, email, code);
 
-            await UserServices.updateUser(userId, { emailVerified: true });
+            await UserServices.updateUser(userId, { emailVerified: true, email });
 
             return ApiResponse.OK(res, "E-mail verificado com sucesso");
         } catch (error) {

@@ -96,6 +96,32 @@ const userController = {
         }
     },
 
+    async getLoggedUser(req, res){
+        const user = req.user
+        
+        if (!user) {
+            return ApiResponse.UNAUTHORIZED(res, "Usuário não autenticado")
+        }
+
+        try {
+            const users = await UserServices.getUsers({ _id: user.userId });
+
+            if (!users || users.length === 0) {
+                return ApiResponse.NOTFOUND(res, "Usuário não encontrado");
+            }
+
+            return ApiResponse.OK(res, users[0]);
+        } catch (error) {
+            if (error instanceof ValidationError) {
+                return ApiResponse.BADREQUEST(res, error.message);
+            }
+            if (error instanceof NotFoundError) {
+                return ApiResponse.NOTFOUND(res, error.message);
+            }
+            return ApiResponse.ERROR(res, error.message);
+        }
+    },
+
     async deleteUser(req, res) {
         const loggedUserId = req.user.userId;
         const userId = req.params.id;

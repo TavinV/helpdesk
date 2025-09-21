@@ -147,18 +147,22 @@ const ticketConfirmationEmailTemplate = (ticket) => {
             <div class="ticket-info">
                 <div class="info-item">
                     <span class="info-label">Título: </span>
+                    <br/>
                     <span class="info-value">${ticket.title}</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Descrição: </span>
+                    <br/>
                     <span class="info-value">${ticket.description}</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Status: </span>
+                    <br/>
                     <span class="info-value">${ticket.status === 'open' ? 'Aberto' : ticket.status}</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Data de Criação: </span>
+                    <br/>
                     <span class="info-value">${new Date(ticket.createdAt).toLocaleString('pt-BR')}</span>
                 </div>
             </div>

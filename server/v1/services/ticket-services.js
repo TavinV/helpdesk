@@ -3,6 +3,7 @@ import ticketSchema from "../validation/validate-ticket.js";
 import { validateTicketUpdate } from "../validation/validate-ticket.js";
 
 import { ValidationError, AppError, ConflictError, NotFoundError } from "../errors/errors.js";
+import CastError from "mongoose/lib/error/cast.js";
 
 class TicketServices {
 
@@ -68,6 +69,9 @@ class TicketServices {
                 .sort({ createdAt: -1 });
             return tickets;
         } catch (error) {
+            if (error instanceof CastError) {   
+                throw new NotFoundError('Usuário não encontrado');
+            }
             throw new AppError(`Erro ao buscar chamados: ${error.message}`);
         }
     }
