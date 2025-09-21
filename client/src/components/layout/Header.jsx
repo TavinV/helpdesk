@@ -55,7 +55,12 @@ const Header = () => {
                             </>
                         )}
 
-                        {!user && <HeaderNavLink to="/login">Login</HeaderNavLink>}
+                        {!user && (
+                            <>
+                                <HeaderNavLink to="/login">Login</HeaderNavLink>
+                                <HeaderNavLink to="/register" className="bg-blue-500 text-white hover:bg-blue-400 hover:text-white">Criar conta</HeaderNavLink>
+                            </>
+                        )}
                     </nav>
 
                     {/* Perfil + Logout à direita */}
@@ -92,9 +97,14 @@ const Header = () => {
                         </HeaderNavLink>
 
                         {!user && (
-                            <HeaderNavLink to="/login" onClick={closeMenu}>
-                                Login
-                            </HeaderNavLink>
+                            <>
+                                <HeaderNavLink to="/login" onClick={closeMenu}>
+                                    Login
+                                </HeaderNavLink>
+                                <HeaderNavLink to="/register" className="text-blue-500" onClick={closeMenu}>
+                                    Criar conta
+                                </HeaderNavLink>
+                            </>
                         )}
 
                         {user && (
