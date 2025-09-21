@@ -332,7 +332,17 @@ const MyTickets = () => {
                                                 {ticket.additionalInfo && (
                                                     <>
                                                         <h4 className="font-medium text-gray-700 mb-2">Informações Adicionais</h4>
-                                                        <p className="text-gray-600">{ticket.additionalInfo}</p>
+                                                        <p className="text-gray-600 mb-4">{ticket.additionalInfo}</p>
+                                                    </>
+                                                )}
+
+                                                {/* Adicionar esta seção para mostrar a solução quando o ticket estiver fechado */}
+                                                {ticket.status === 'closed' && ticket.solution && (
+                                                    <>
+                                                        <h4 className="font-medium text-green-700 mb-2">Solução Aplicada pelo Técnico</h4>
+                                                        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                                                            <p className="text-green-800">{ticket.solution}</p>
+                                                        </div>
                                                     </>
                                                 )}
                                             </div>
