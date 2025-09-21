@@ -1,23 +1,30 @@
-import Header from '../components/layout/Header.jsx';
-import FormContainer from '../components/layout/FormContainer.jsx';
-import Footer from '../components/layout/Footer.jsx'
-import IconInput from '../components/ui/IconInput.jsx';
-
-import { Lock, User, AlertCircle } from 'lucide-react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Lock, User, AlertCircle, LogIn } from 'lucide-react';
 import { useAuthContext } from '../context/authContext.jsx';
+import PageContainer from '../components/layout/PageContainer.jsx';
+import Card from '../components/ui/Card.jsx';
+import Button from '../components/ui/Button.jsx';
+import AlertMessage from '../components/ui/AlertMessage.jsx';
+import FormInput from '../components/form/FormInput.jsx';
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { login, loading, error, clearError, user } = useAuthContext(); // usar AuthContext
+    const { login, loading, error, clearError, user } = useAuthContext();
     const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
         clearError();
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            const from = location.state?.from?.pathname || "/";
+            navigate(from, { replace: true });
+        }
+    }, [user, navigate, location]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,60 +33,94 @@ const Login = () => {
         const result = await login(email, password);
         if (result.success) {
             const from = location.state?.from?.pathname || "/";
-            navigate(from, { replace: true }); n
-            navigate("/");
+            navigate(from, { replace: true });
         }
     };
-    
+
     if (user) {
-        navigate("/");
-        return null; // ou um loading spinner
+        return null;
     }
 
     return (
-        <>
-            <Header />
-            <main className='min-h-screen flex flex-col items-center justify-center'>
-                <FormContainer
-                    formTitle="Faça o login"
-                    submitButtonText={loading ? "Carregando..." : "Entrar"}
-                    onSubmit={handleSubmit}
-                >
-                    <label>Email</label>
-                    <IconInput
-                        placeholder="seuemail@gmail.com"
-                        icon={<User size={16} />}
-                        label="Email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-
-                    <label>Senha</label>
-                    <IconInput
-                        placeholder="Sua senha"
-                        icon={<Lock size={16} />}
-                        label="Senha"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    {error &&
-                    <div className="flex items-center gap-2 bg-red-50 border border-red-300 text-red-700 p-3 rounded-md">
-                        <AlertCircle size={20} />
-                        <span>{error}</span>
+        <PageContainer
+            showHeader={false}
+            showFooter={false}
+            className="flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50"
+        >
+            <div className="w-full max-w-md mx-4">
+                <Card className="overflow-hidden" header={
+                    <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white text-center">
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                            <div className="p-2 bg-white/20 rounded-full backdrop-blur-sm">
+                                <LogIn size={24} className="text-white" />
+                            </div>
+                            <h1 className="text-2xl font-bold">Faça o login</h1>
+                        </div>
+                        <p className="text-blue-100 text-sm">
+                            Acesse sua conta para gerenciar seus chamados
+                        </p>
                     </div>
-                    }
+                }>                   
 
-                    <div className="flex mt-8 gap-2">
-                        <p className='text-gray-500 font-semibold'>Ainda não tem uma conta?</p>
-                        <NavLink className="text-blue-500 font-regular" to="/register">Cadastre-se</NavLink>
-                    </div>
-                </FormContainer>
-            </main>
-            <Footer />
-        </>
+                    <form onSubmit={handleSubmit} className="p-6">
+                        <div className="space-y-4">
+                            <FormInput
+                                label="Email"
+                                icon={<User size={16} />}
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="seuemail@gmail.com"
+                                required
+                                disabled={loading}
+                            />
+
+                            <FormInput
+                                label="Senha"
+                                icon={<Lock size={16} />}
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Sua senha"
+                                required
+                                disabled={loading}
+                            />
+                        </div>
+
+                        {error && (
+                            <AlertMessage
+                                type="error"
+                                message={error}
+                                className="mt-4"
+                            />
+                        )}
+
+                        <Button
+                            type="submit"
+                            loading={loading}
+                            variant="primary"
+                            className="w-full mt-6"
+                            icon={<LogIn size={18} />}
+                        >
+                            {loading ? "Entrando..." : "Entrar"}
+                        </Button>
+
+                        <div className="mt-6 pt-4 border-t border-gray-200">
+                            <p className="text-center text-gray-600">
+                                Ainda não tem uma conta?{" "}
+                                <NavLink
+                                    to="/register"
+                                    className="text-blue-600 hover:text-blue-800 font-medium hover:underline"
+                                >
+                                    Cadastre-se
+                                </NavLink>
+                            </p>
+                        </div>
+                    </form>
+                </Card>
+
+            </div>
+        </PageContainer>
     );
 };
 

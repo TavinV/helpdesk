@@ -2,7 +2,7 @@ import Header from '../components/layout/Header.jsx';
 import MainSection from '../components/layout/MainSection.jsx';
 import Banner from '../components/layout/Banner.jsx';
 import Footer from '../components/layout/Footer.jsx'
-import Card from '../components/ui/Card.jsx';
+import Card from '../components/ui/ImageCard.jsx';
 
 const ContentSection = ({sectionTitle, children}) =>{
     return (

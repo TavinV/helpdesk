@@ -38,14 +38,19 @@ const ticketController = {
 
     async getTickets(req, res) {
         try {
-            const {user} = req.query;
+            const {user, status} = req.query;
             let tickets;
             
+            const filters = {};
+
             if (user) {
-                tickets = await TicketServices.getTickets({ user_id: user });
-            } else {
-                tickets = await TicketServices.getTickets();
+                filters.user_id = user;
             }
+            if (status) {
+                filters.status = status;
+            }
+
+            tickets = await TicketServices.getTickets(filters);
 
             return ApiResponse.OK(res, tickets);
         } catch (error) {

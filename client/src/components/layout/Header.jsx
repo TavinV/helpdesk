@@ -45,7 +45,14 @@ const Header = () => {
                         )}
 
                         {user && user.role === "technician" && (
-                            <HeaderNavLink to="/chamados">Chamados</HeaderNavLink>
+                            <>
+                                <HeaderNavLink to="/technician-my-tickets" onClick={closeMenu}>
+                                    Meus Chamados
+                                </HeaderNavLink>
+                                <HeaderNavLink to="/technician-open-tickets" onClick={closeMenu}>
+                                    Chamados Abertos
+                                </HeaderNavLink>
+                            </>
                         )}
 
                         {!user && <HeaderNavLink to="/login">Login</HeaderNavLink>}
@@ -108,9 +115,14 @@ const Header = () => {
                                 )}
 
                                 {user.role === "technician" && (
-                                    <HeaderNavLink to="/tickets" onClick={closeMenu}>
-                                        Chamados
-                                    </HeaderNavLink>
+                                    <>
+                                        <HeaderNavLink to="/technician-my-tickets" onClick={closeMenu}>
+                                            Meus Chamados
+                                        </HeaderNavLink>
+                                        <HeaderNavLink to="/technician-open-tickets" onClick={closeMenu}>
+                                            Chamados Abertos
+                                        </HeaderNavLink>
+                                    </>
                                 )}
 
                                 <button

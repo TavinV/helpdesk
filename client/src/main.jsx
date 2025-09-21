@@ -14,6 +14,8 @@ import Profile from './pages/Profile.jsx';
 import VerifyEmail from './pages/VerifyEmail.jsx';
 import OpenTicket from './pages/OpenTicket.jsx';
 import MyTickets from './pages/MyTickets.jsx';
+import TechnicianOpenTickets from './pages/TechnicianOpenTickets.jsx';
+import TechnicianMyTickets from './pages/TechnicianMyTickets.jsx';
 
 const router = createBrowserRouter([
   {
@@ -64,6 +66,22 @@ const router = createBrowserRouter([
     </PrivateRoute>
   )
   },
+  {
+    path: '/technician-open-tickets',
+    element: (
+    <PrivateRoute>
+      <TechnicianOpenTickets />
+    </PrivateRoute>
+  )
+  },
+  {
+    path: '/technician-my-tickets',
+    element: (
+    <PrivateRoute>
+      <TechnicianMyTickets />
+    </PrivateRoute>
+  )
+  }
 ]);
 
 createRoot(document.getElementById('root')).render(

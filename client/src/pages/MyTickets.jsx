@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/layout/Header.jsx";
 import Footer from "../components/layout/Footer.jsx";
 import Modal from "../components/ui/Modal.jsx";
+import { toast, Toaster } from "react-hot-toast";
+
 import {
     ClipboardList,
     Search,
@@ -44,8 +46,10 @@ const MyTickets = () => {
     useEffect(() => {
         if (!user) {
             navigate("/login", { state: { from: "/my-tickets" } });
+        } else if (user.role === "technician") {
+            navigate("/");
         } else {
-            fetchTickets();
+            fetchTickets({user: user.userId});
         }
     }, [user, navigate, fetchTickets]);
 
@@ -87,10 +91,8 @@ const MyTickets = () => {
                 return <Clock size={16} className="text-amber-500" />;
             case 'in_progress':
                 return <Loader2 size={16} className="text-blue-500 animate-spin" />;
-            case 'resolved':
-                return <CheckCircle size={16} className="text-green-500" />;
             case 'closed':
-                return <XCircle size={16} className="text-gray-500" />;
+                return <CheckCircle size={16} className="text-green-500" />;
             default:
                 return <ClipboardList size={16} className="text-gray-500" />;
         }
@@ -102,10 +104,8 @@ const MyTickets = () => {
                 return "Aberto";
             case 'in_progress':
                 return "Em Andamento";
-            case 'resolved':
-                return "Resolvido";
             case 'closed':
-                return "Fechado";
+                return "Resolvido";
             default:
                 return status;
         }
@@ -146,6 +146,7 @@ const MyTickets = () => {
 
     return (
         <>
+            <Toaster position="bottom-center" reverseOrder={false} />
             <Header />
             <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4">
                 <div className="max-w-6xl mx-auto">
@@ -195,7 +196,6 @@ const MyTickets = () => {
                                     <option value="open">Aberto</option>
                                     <option value="in_progress">Em Andamento</option>
                                     <option value="resolved">Resolvido</option>
-                                    <option value="closed">Fechado</option>
                                 </select>
                             </div>
 
@@ -278,7 +278,10 @@ const MyTickets = () => {
                                                         <Calendar size={14} />
                                                         <span>Criado em: {formatDate(ticket.createdAt)}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-1">
+                                                    <div className="flex items-center gap-1 cursor-pointer" onClick={() =>{
+                                                        navigator.clipboard.writeText(ticket._id);
+                                                        toast.success("ID do ticket copiado para a área de transferência");
+                                                    }}>
                                                         <User size={14} />
                                                         <span>ID: {ticket._id.slice(-8)}</span>
                                                     </div>

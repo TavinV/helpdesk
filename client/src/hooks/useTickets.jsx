@@ -11,7 +11,7 @@ export function useTickets(userId) {
         setLoading(true);
         setError(null);
         try {
-            const query = new URLSearchParams({ user: userId, ...filters }).toString();
+            const query = new URLSearchParams({...filters }).toString();
             const res = await api.get(`/tickets?${query}`);
             if (res.data.success) {
                 setTickets(res.data.data);
