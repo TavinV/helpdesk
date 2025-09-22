@@ -34,7 +34,7 @@ const Profile = () => {
     const handleDeleteAccount = async () => {
         setLoadingDelete(true);
         try {
-            await api.delete(`/users/${user._id}`);
+            await api.delete(`/users/${user?._id}`);
             logout();
             navigate("/register");
         } catch (err) {
