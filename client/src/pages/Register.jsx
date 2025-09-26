@@ -1,152 +1,318 @@
-import Header from '../components/layout/Header';
-import FormContainer from '../components/layout/FormContainer';
-import Footer from '../components/layout/Footer.jsx';
-import IconInput from '../components/ui/IconInput.jsx';
-
-import { Lock, User, IdCard, MailCheck, Phone, AlertCircle } from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Lock, User, IdCard, Mail, Phone, AlertCircle, UserPlus, Shield, Briefcase } from 'lucide-react';
 import { useAuthContext } from '../context/AuthContext.jsx';
+import PageContainer from '../components/layout/PageContainer.jsx';
+import Card from '../components/ui/Card.jsx';
+import Button from '../components/ui/Button.jsx';
+import AlertMessage from '../components/ui/AlertMessage.jsx';
+import FormInput from '../components/form/FormInput.jsx';
+import RadioGroup from '../components/form/RadioGroup.jsx';
 
 import api from '../services/api.js';
 import maskCPF from '../util/mask-cpf.js';
 import maskPhone from '../util/mask-phone.js';
 
 const Register = () => {
-    const [email, setEmail] = useState("");
-    const [role, setRole] = useState("user");
-    const [name, setName] = useState("");
-    const [cpf, setCpf] = useState("");
-    const [phone, setPhone] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [formData, setFormData] = useState({
+        email: "",
+        role: "user",
+        name: "",
+        cpf: "",
+        phone: "",
+        password: "",
+        confirmPassword: ""
+    });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const {login} = useAuthContext();
-
-
+    const { login, user } = useAuthContext();
+    const location = useLocation();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            const from = location.state?.from?.pathname || "/";
+            navigate(from, { replace: true });
+        }
+    }, [user, navigate, location]);
+
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+        setError(null);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
 
-        if (password !== confirmPassword) {
+        if (formData.password !== formData.confirmPassword) {
             setError("As senhas não coincidem.");
+            return;
+        }
+
+        if (formData.password.length < 6) {
+            setError("A senha deve ter pelo menos 6 caracteres.");
             return;
         }
 
         setLoading(true);
         try {
             const body = {
-                name,
-                email,
-                cpf: cpf.replace(/\D/g, ""),
-                password,
-                role,
-                phone: phone.replace(/\D/g, ""),
+                name: formData.name,
+                email: formData.email,
+                cpf: formData.cpf.replace(/\D/g, ""),
+                password: formData.password,
+                role: formData.role,
+                phone: formData.phone.replace(/\D/g, ""),
             };
 
             const response = await api.post("/users", body);
 
             if (response.data.success) {
-                // Login automatico
-                const loginResult = await login(email, password)
+                // Login automático
+                const loginResult = await login(formData.email, formData.password);
 
-                if (loginResult.success){
-                    navigate("/")
+                if (loginResult.success) {
+                    const from = location.state?.from?.pathname || "/";
+                    navigate(from, { replace: true });
                 } else {
-                    navigate("/login")
+                    navigate("/login");
                 }
-
             } else {
                 setError(response.data.message || "Erro ao cadastrar usuário");
             }
         } catch (err) {
-            setError(err.response?.data?.message || "Erro de conexão");
+            setError(err.response?.data?.message || "Erro de conexão. Tente novamente.");
         } finally {
             setLoading(false);
         }
     };
 
+    if (user) {
+        return null;
+    }
+
+    const roleOptions = [
+        {
+            value: "user",
+            label: "Usuário",
+            description: "Criar e acompanhar chamados de suporte",
+            icon: <User size={16} />
+        },
+        {
+            value: "technician",
+            label: "Técnico",
+            description: "Atender e resolver chamados técnicos",
+            icon: <Shield size={16} />
+        }
+    ];
+
     return (
-        <>
-            <Header />
-            <main className="min-h-screen flex items-center justify-center pt-24 pb-8 px-4 md:px-0 bg-gray-50">
-                <FormContainer
-                    formTitle="Criar conta"
-                    submitButtonText={loading ? "Carregando..." : "Cadastre-se"}
-                    onSubmit={handleSubmit}
-                    className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 space-y-4"
+        <PageContainer
+            showHeader={false}
+            showFooter={false}
+            className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8"
+        >
+            <div className="w-full max-w-4xl mx-4"> {/* Aumentado para max-w-4xl */}
+                <Card
+                    className="overflow-hidden shadow-xl"
+                    header={
+                        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-6 text-white">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-white/20 rounded-full backdrop-blur-sm">
+                                        <UserPlus size={32} className="text-white" />
+                                    </div>
+                                    <div>
+                                        <h1 className="text-3xl font-bold">Criar Conta</h1>
+                                        <p className="text-emerald-100 text-lg mt-1">
+                                            Junte-se à nossa plataforma de suporte técnico
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="hidden lg:block text-right">
+                                    <p className="text-emerald-200 text-sm">Rápido • Seguro • Gratuito</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 >
-                    {/* Tipo de usuário */}
-                    <div className="flex flex-col gap-2">
-                        <label className="font-semibold">Tipo de usuário</label>
-                        <div className="flex gap-4 items-center">
-                            <label htmlFor="user" className="flex items-center gap-1">
-                                <input
-                                    id="user"
-                                    type="radio"
-                                    name="role"
-                                    value="user"
-                                    checked={role === "user"}
-                                    onChange={(e) => setRole(e.target.value)}
-                                />
-                                Usuário
-                            </label>
-                            <label htmlFor="tech" className="flex items-center gap-1">
-                                <input
-                                    id="tech"
-                                    type="radio"
-                                    name="role"
-                                    value="technician"
-                                    checked={role === "technician"}
-                                    onChange={(e) => setRole(e.target.value)}
-                                />
-                                Técnico
-                            </label>
+                    <form onSubmit={handleSubmit} className="p-8">
+                        {/* Seção de Tipo de Usuário - Agora lado a lado */}
+                        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+                            <div>
+                                <label className="block text-lg font-semibold text-gray-800 mb-4">
+                                    Selecione o tipo de conta:
+                                </label>
+                                <p className="text-gray-600 text-sm mb-4">
+                                    Escolha o perfil que melhor se adequa às suas necessidades
+                                </p>
+                            </div>
+                            <RadioGroup
+                                options={roleOptions}
+                                value={formData.role}
+                                onChange={(value) => handleInputChange('role', value)}
+                                className="space-y-3"
+                            />
                         </div>
-                    </div>
 
-                    {/* Inputs */}
-                    <label className="font-semibold">Nome completo</label>
-                    <IconInput placeholder="Seu nome completo" icon={<User size={16} />} type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                        {/* Informações Pessoais - Grid mais compacto */}
+                        <div className="space-y-6">
+                            <div className="grid lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+                                        Informações Pessoais
+                                    </h3>
+                                    <div className="space-y-4">
+                                        <FormInput
+                                            label="Nome Completo"
+                                            icon={<User size={18} />}
+                                            type="text"
+                                            value={formData.name}
+                                            onChange={(e) => handleInputChange('name', e.target.value)}
+                                            placeholder="Digite seu nome completo"
+                                            required
+                                            disabled={loading}
+                                            className="text-base"
+                                        />
 
-                    <label className="font-semibold">E-mail</label>
-                    <IconInput placeholder="Seu e-mail" icon={<MailCheck size={16} />} type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                        <FormInput
+                                            label="CPF"
+                                            icon={<IdCard size={18} />}
+                                            type="text"
+                                            value={formData.cpf}
+                                            onChange={(e) => handleInputChange('cpf', maskCPF(e.target.value))}
+                                            placeholder="123.456.789-00"
+                                            maxLength={14}
+                                            required
+                                            disabled={loading}
+                                            className="text-base"
+                                        />
+                                    </div>
+                                </div>
 
-                    <label className="font-semibold">CPF</label>
-                    <IconInput placeholder="123.456.789-00" maxLength={14} icon={<IdCard size={16} />} type="text" value={cpf} onChange={(e) => setCpf(maskCPF(e.target.value))} />
+                                <div>
+                                    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+                                        Informações de Contato
+                                    </h3>
+                                    <div className="space-y-4">
+                                        <FormInput
+                                            label="Email"
+                                            icon={<Mail size={18} />}
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
+                                            placeholder="seuemail@gmail.com"
+                                            required
+                                            disabled={loading}
+                                            className="text-base"
+                                        />
 
-                    <label className="font-semibold">Telefone</label>
-                    <IconInput placeholder="(11) 98765-4321" maxLength={15} icon={<Phone size={16} />} type="text" value={phone} onChange={(e) => setPhone(maskPhone(e.target.value))} />
+                                        <FormInput
+                                            label="Telefone"
+                                            icon={<Phone size={18} />}
+                                            type="text"
+                                            value={formData.phone}
+                                            onChange={(e) => handleInputChange('phone', maskPhone(e.target.value))}
+                                            placeholder="(11) 98765-4321"
+                                            maxLength={15}
+                                            required
+                                            disabled={loading}
+                                            className="text-base"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
 
-                    <label className="font-semibold">Senha</label>
-                    <IconInput placeholder="Sua senha" icon={<Lock size={16} />} type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                            {/* Senhas - Agora lado a lado com título */}
+                            <div className="grid lg:grid-cols-1 gap-6">
+                                <div>
+                                    <h3 className="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+                                        Segurança da Conta
+                                    </h3>
+                                </div>
+                                <div className="grid lg:grid-cols-2 gap-4">
+                                    <FormInput
+                                        label="Senha"
+                                        icon={<Lock size={18} />}
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={(e) => handleInputChange('password', e.target.value)}
+                                        placeholder="Mínimo 6 caracteres"
+                                        required
+                                        disabled={loading}
+                                        className="text-base"
+                                    />
 
-                    <label className="font-semibold">Confirme sua senha</label>
-                    <IconInput placeholder="Confirme sua senha" icon={<Lock size={16} />} type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-
-                    {/* Mensagem de erro sofisticada */}
-                    {error && (
-                        <div className="flex items-center gap-2 bg-red-50 border border-red-300 text-red-700 p-3 rounded-md">
-                            <AlertCircle size={20} />
-                            <span>{error}</span>
+                                    <FormInput
+                                        label="Confirmar Senha"
+                                        icon={<Lock size={18} />}
+                                        type="password"
+                                        value={formData.confirmPassword}
+                                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                                        placeholder="Digite novamente"
+                                        required
+                                        disabled={loading}
+                                        className="text-base"
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    )}
 
-                    {/* Link para login */}
-                    <div className="flex flex-col sm:flex-row justify-center gap-2 mt-6 text-center">
-                        <p className="text-gray-500 font-semibold">Já possui uma conta?</p>
-                        <NavLink className="text-blue-500" to="/login">
-                            Faça login
-                        </NavLink>
-                    </div>
-                </FormContainer>
-            </main>
-            <Footer />
-        </>
+                        {error && (
+                            <AlertMessage
+                                type="error"
+                                message={error}
+                                className="mt-6"
+                                icon={<AlertCircle size={18} />}
+                            />
+                        )}
+
+                        {/* Botão de Submit e Links */}
+                        <div className="grid lg:grid-cols-1 gap-8 items-center mt-8 pt-6 border-t border-gray-200">
+                            <div>
+                                <p className="text-gray-600">
+                                    Ao criar uma conta, você concorda com nossos{' '}
+                                    <a href="#" className="text-blue-600 hover:text-blue-800 font-medium underline">
+                                        Termos de Uso
+                                    </a>{' '}
+                                    e{' '}
+                                    <a href="#" className="text-blue-600 hover:text-blue-800 font-medium underline">
+                                        Política de Privacidade
+                                    </a>
+                                </p>
+                            </div>
+
+                            <div className="space-y-4">
+                                <Button
+                                    type="submit"
+                                    loading={loading}
+                                    variant="primary"
+                                    className="w-full py-4 text-lg font-semibold"
+                                    icon={<UserPlus size={20} />}
+                                >
+                                    {loading ? "Criando conta..." : "Criar Minha Conta"}
+                                </Button>
+
+                                <p className="text-center text-gray-600">
+                                    Já possui uma conta?{" "}
+                                    <NavLink
+                                        to="/login"
+                                        state={location.state}
+                                        className="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
+                                    >
+                                        Faça login aqui
+                                    </NavLink>
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                </Card>
+            </div>
+        </PageContainer>
     );
 };
 
