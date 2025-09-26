@@ -26,7 +26,8 @@ async function sendMail(to, subject, html) {
             html,
         });
     } catch (error) {
-        throw new SendEmailError("Não foi possível enviar o email.");
+        console.error("Erro ao enviar e-mail:", error);
+        throw new SendEmailError("Não foi possível enviar o email");
     }
 }
 

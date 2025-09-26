@@ -5,7 +5,7 @@ import ApiResponse from "../util/api-response.js";
 import sendMail from "../util/send-email.js";
 import verifyEmailTemplate from "../emails/verify-email-template.js";
 
-import { ValidationError, NotFoundError, ConflictError } from "../errors/errors.js";
+import { ValidationError, NotFoundError, ConflictError, SendEmailError } from "../errors/errors.js";
 
 const authController = {
     async loginUser(req, res) {
@@ -50,19 +50,20 @@ const authController = {
             if (error instanceof ConflictError) return ApiResponse.ALREADYEXISTS(res, error.message);
             if (error instanceof NotFoundError) return ApiResponse.NOTFOUND(res, error.message);
             if (error instanceof ValidationError) return ApiResponse.BADREQUEST(res, error.message);
+            if (error instanceof SendEmailError) return ApiResponse.ERROR(res, error.message);
             return ApiResponse.ERROR(res, error.message);
         }
     },
-
+    
     async verifyEmail(req, res) {
         const userId = req.params.id;
         const { code, email } = req.body;
-
+        
         try {
             await EmailVerificationCodeServices.validateCode(userId, email, code);
-
+            
             await UserServices.updateUser(userId, { emailVerified: true, email });
-
+            
             return ApiResponse.OK(res, "E-mail verificado com sucesso");
         } catch (error) {
             if (error instanceof ValidationError) return ApiResponse.BADREQUEST(res, error.message);
