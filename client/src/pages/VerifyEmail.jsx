@@ -41,6 +41,8 @@ const VerifyEmail = () => {
         return null;
     }
 
+    const userId = user?.userId || user?._id;
+
     const handleRequestCode = async (e) => {
         e.preventDefault();
         setError(null);
@@ -48,7 +50,7 @@ const VerifyEmail = () => {
         setLoading(true);
 
         try {
-            const res = await api.post(`/auth/verify-email/request/${user?._id}`, { email });
+            const res = await api.post(`/auth/verify-email/request/${userId}`, { email });
             if (res.data.success) {
                 setStep("confirm");
                 setMessage("Um código de verificação foi enviado para o seu e-mail.");
@@ -69,7 +71,7 @@ const VerifyEmail = () => {
         setLoading(true);
 
         try {
-            const res = await api.post(`/auth/verify-email/request/${user?._id}`, { email });
+            const res = await api.post(`/auth/verify-email/request/${userId}`, { email });
             if (res.data.success) {
                 setMessage("Novo código enviado para o seu e-mail.");
                 setCountdown(60);
@@ -88,7 +90,7 @@ const VerifyEmail = () => {
         setLoading(true);
 
         try {
-            const res = await api.post(`/auth/verify-email/confirm/${user?._id}`, { email, code });
+            const res = await api.post(`/auth/verify-email/confirm/${userId}`, { email, code });
             if (res.data.success) {
                 setStep("success");
                 setMessage("E-mail verificado com sucesso!");

@@ -25,20 +25,22 @@ const Profile = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState(false);
     const [loadingUpdate, setLoadingUpdate] = useState(false);
-
+    const [error, setError] = useState(null);
     const [name, setName] = useState(user?.name || "");
     const [email, setEmail] = useState(user?.email || "");
     const [cpf, setCpf] = useState(user?.cpf || "");
     const [phone, setPhone] = useState(user?.phone || "");
 
+    const userId = user?.userId || user?._id;
+
     const handleDeleteAccount = async () => {
         setLoadingDelete(true);
         try {
-            await api.delete(`/users/${user?._id}`);
+            await api.delete(`/users/${userId}`);
             logout();
             navigate("/register");
         } catch (err) {
-            console.error(err);
+            setError(err.response?.data?.message || "Erro ao atualizar perfil");
         } finally {
             setLoadingDelete(false);
             setShowDeleteModal(false);
@@ -50,7 +52,7 @@ const Profile = () => {
         try {
             const emailChanged = email !== user.email;
 
-            await api.put(`/users/${user._id}`, {
+            await api.put(`/users/${userId}`, {
                 name,
                 email,
                 cpf,
@@ -71,7 +73,7 @@ const Profile = () => {
 
             setShowEditModal(false);
         } catch (err) {
-            console.error(err);
+            setError(err.response?.data?.message || "Erro ao atualizar perfil");
         } finally {
             setLoadingUpdate(false);
         }
@@ -279,8 +281,8 @@ const Profile = () => {
                     </div>
 
                     <AlertMessage
-                        type="info"
-                        message="Após alterar seu e-mail, você precisará verificá-lo novamente para acessar todos os recursos."
+                        type={error ? "error" : "info"}
+                        message={!error ? "Após alterar seu e-mail, você precisará verificá-lo novamente para acessar todos os recursos." : error}
                         className="mt-4"
                     />
                 </Modal>
